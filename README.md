@@ -1,5 +1,5 @@
 # Dermadvisor - a skin condition detection app
-##By Elliot Hong
+## By Elliot Hong
 
 This is a mobile application built with React Native to help users identify common skin conditions from a photo. It uses machine learning to classify skin issues and provides informative resources for users to learn more about their condition, including inclusive example images and properly cited medical references.
 
