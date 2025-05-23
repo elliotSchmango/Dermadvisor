@@ -6,6 +6,9 @@ import * as MediaLibrary from 'expo-media-library';
 import { LightSensor } from 'expo-sensors';
 import { FlashMode } from 'expo-camera';
 import { Image } from 'react-native';
+import { uploadToS3 } from '../utils/uploadToS3';
+import { ActivityIndicator } from 'react-native';
+
 
 export default function App() {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -16,6 +19,7 @@ export default function App() {
   const [lightLevel, setLightLevel] = useState<number | null>(null);
   const isTooDark = lightLevel !== null && lightLevel < 10;
   const [flash, setFlash] = useState<FlashMode>('off');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const subscription = LightSensor.addListener(({ illuminance }) => {
@@ -64,28 +68,45 @@ export default function App() {
   return (
     <View style={styles.container}>
       {photoUri ? (
-        <View style={styles.previewContainer}>
-          <Text style={styles.previewLabel}>Preview</Text>
-          <Image source={{ uri: photoUri }} style={styles.previewImage} />
-
-          <View style={styles.previewControls}>
-            <TouchableOpacity
-              onPress={() => setPhotoUri(null)}
-              style={styles.retakeButton}
-            >
-              <Text style={styles.buttonText}>Retake</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() =>
-                router.push({ pathname: '/result', params: { uri: photoUri } })
-              }
-              style={styles.confirmButton}
-            >
-              <Text style={styles.buttonText}>Confirm</Text>
-            </TouchableOpacity>
+        loading ? (
+          <View style={styles.previewContainer}>
+            <ActivityIndicator size="large" color="#007AFF" />
+            <Text style={styles.previewLabel}>Uploading...</Text>
           </View>
-        </View>
+        ) : (
+          <View style={styles.previewContainer}>
+            <Text style={styles.previewLabel}>Preview</Text>
+            <Image source={{ uri: photoUri }} style={styles.previewImage} />
+            <View style={styles.previewControls}>
+              <TouchableOpacity onPress={() => setPhotoUri(null)} style={styles.retakeButton}>
+                <Text style={styles.buttonText}>Retake</Text>
+              </TouchableOpacity>
+        
+              <TouchableOpacity
+                onPress={async () => {
+                  if (photoUri) {
+                    try {
+                      setLoading(true);
+                      const s3Url = await uploadToS3(photoUri, `photo-${Date.now()}.jpg`);
+                      setLoading(false);
+                      alert('Successfully uploaded! ✅');
+                      router.push({
+                        pathname: '/result',
+                        params: { uri: photoUri, s3Url },
+                      });
+                    } catch (err) {
+                      setLoading(false);
+                      alert('Upload failed. Please try again.');
+                    }
+                  }
+                }}
+                style={styles.confirmButton}
+              >
+                <Text style={styles.buttonText}>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )    
       ) : (
         <CameraView
           style={styles.camera}
