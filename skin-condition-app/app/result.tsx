@@ -34,7 +34,12 @@ export default function Result() {
           <Text style={styles.resultText}>Diagnosis: {diagnosis}</Text>
           <Text style={styles.explanationText}>Eczema is a condition that causes the skin to become inflamed or irritated.</Text>
 
-          <TouchableOpacity onPress={() => router.push('/info')}>
+          <TouchableOpacity onPress={() => 
+            router.push({
+                pathname: '/info',
+                params: { scrollTo: 'acne' }, //eczema as placeholder, but will change to be dynamic later
+              })         
+          }>
             <Text style={styles.link}>Take me to description</Text>
           </TouchableOpacity>
 
