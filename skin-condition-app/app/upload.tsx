@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function Upload() {
+  const router = useRouter();
   const [image, setImage] = useState<string | null>(null);
 
   const pickImage = async () => {
@@ -16,6 +18,11 @@ export default function Upload() {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
+
+    router.push({
+      pathname: '/result',
+      params: { uri: result.assets[0].uri },
+    });    
   };
 
   return (
