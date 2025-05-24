@@ -11,24 +11,21 @@ Millions of people suffer from treatable skin conditions but lack immediate acce
 
 ---
 
-## Proposed Requirements (will change as needed as project progresses)
+## Features
 
-- [x] Mobile platform to support camera access  
-- [x] Support photo upload functionality  
-- [x] Bottom navbar with 3 icons: upload (left), camera (center), info/citations (right)  
-- [x] Camera should only function under adequate lighting; show alert and block capture if lighting is insufficient  
-- [x] Upload feature must support jpeg, jpg, png, raw, heic/heif, webp, and tiff formats  
-- [x] Information page must include descriptions of common skin conditions (e.g., eczema, acne, antifungal, cellulitis), with inclusive example photos representing various skin tones  
-- [x] Example photos should be accessed only through external links labeled with a content warning  
-- [x] Add fourth icon on the navbar (to the right of the info icon) that links to a "Sources" tab  
-- [x] "Sources" tab must contain APA-style citations and information about the project creator  
-- [x] After image upload, display a circular loading progress bar  
-- [x] Upon completion, show identified skin condition with a brief explanation  
-- [x] Include an 'X' button at the top-right to close the result view  
-- [x] Provide a link below the explanation labeled 'take me to description' that jumps to the relevant section on the info tab  
-- [x] Use AWS SageMaker to host the skin condition classification model for remote inference  
-- [x] Use AWS Lambda and API Gateway to connect the mobile app to SageMaker securely  
-- [x] Use Expo for React Native app development and deployment  
+- Capture photos directly from the device camera (with lighting checks)
+- Upload images in various formats (jpg, jpeg, png, heic/heif, raw, webp, tiff)
+- Circular progress indicator during diagnosis
+- Dynamic condition result screen with:
+  - Predicted condition name
+  - Scrollable link to info page
+  - Brief explanation with follow-up resources
+  - "X" to close result view
+- Informational tab with inclusive examples and condition summaries
+- Sources tab with full APA-style references and project author info
+- Bottom navigation bar with five tabs: Upload, Camera, Info, Sources, Analysis
+- Secure API powered by AWS SageMaker
+- Backend powered by Node.js with Express
 
 ---
 
@@ -37,21 +34,22 @@ Millions of people suffer from treatable skin conditions but lack immediate acce
 ### Frontend
 - React Native (with Expo)
 - React Navigation (for navbar)
-- Styled Components or Tailwind (for styling)
+- Styled Components
+- Libraries including (but not limited to): expo-camera, expo-image-picker, expo-file-system
 
 ### Backend & Cloud
-- AWS S3 (for image storage)
-- AWS Lambda (for processing uploaded images)
-- AWS API Gateway (for RESTful communication between app and backend)
+- Node.js with Express
+- AWS S3 (for image upload/storage)
 - AWS SageMaker (for image classification model inference)
+- AWS DynamoDB (for dynamic information storage regarding skin conditions)
 
 ### Machine Learning
-- PyTorch or TensorFlow (model training)
-- EfficientNet-B0 or MobileNetV3 (for classification)
-- Exported as TorchScript or used via SageMaker endpoint
+- PyTorch, ResNet18
+- Trained and evaluated in SageMaker Studio (Jupyter Labs)
+- Model used via SageMaker endpoint
 
 ---
 
 ## License
 
-This project is licensed under the Apache License. See the `LICENSE` file for details.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
