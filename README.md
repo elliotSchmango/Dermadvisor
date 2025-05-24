@@ -53,3 +53,21 @@ Millions of people suffer from treatable skin conditions but lack immediate acce
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+## Environment Configuration
+
+Create a `.env` file in the `backend/` directory with the following keys:
+
+AWS_REGION=example-region
+AWS_ACCESS_KEY_ID=your-access-key-id
+AWS_SECRET_ACCESS_KEY=your-secret-access-key
+S3_BUCKET_NAME=your-s3-bucket-name
+PORT=3000
+
+These values are used in `backend/s3-service.js` to:
+- Generate presigned S3 upload URLs
+- Authenticate the `SageMakerRuntimeClient` for remote inference
+
+**Note:** Never commit your `.env` file to version control. It should be listed in `.gitignore`.
