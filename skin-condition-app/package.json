@@ -12,14 +12,18 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.816.0",
+    "@aws-sdk/client-sagemaker-runtime": "^3.817.0",
     "@aws-sdk/s3-request-presigner": "^3.816.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "expo": "^53.0.4",
+    "expo-camera": "~16.1.6",
     "expo-constants": "~17.1.4",
     "expo-image-picker": "~16.1.4",
     "expo-linking": "~7.1.4",
+    "expo-media-library": "~17.1.6",
     "expo-router": "~5.0.7",
+    "expo-sensors": "~14.1.4",
     "expo-splash-screen": "~0.30.7",
     "expo-status-bar": "~2.2.3",
     "express": "^5.1.0",
@@ -30,9 +34,7 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
     "react-native-web": "^0.20.0",
-    "expo-camera": "~16.1.6",
-    "expo-sensors": "~14.1.4",
-    "expo-media-library": "~17.1.6"
+    "expo-file-system": "~18.1.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
