@@ -2,6 +2,21 @@ import { useLocalSearchParams } from 'expo-router';
 import { View, Text, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
+import * as FileSystem from 'expo-file-system';
+
+//for dynamic descriptions
+const classDescriptions: Record<string, string> = {
+  Acne: "Acne is a common skin condition that occurs when hair follicles become clogged with oil and dead skin cells.",
+  Cellulitis: "Cellulitis is a bacterial skin infection that causes redness, swelling, and tenderness, often with fever.",
+  Eczema: "Eczema is a condition that causes the skin to become inflamed, itchy, red, cracked, and rough.",
+  Fungal: "Fungal infections are caused by fungi and can affect the skin, nails, and other body parts, often appearing as red, itchy patches.",
+};
+
+async function uriToBase64(uri: string): Promise<string> {
+  return await FileSystem.readAsStringAsync(uri, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+}
 
 export default function Result() {
   const { uri } = useLocalSearchParams();
@@ -9,15 +24,28 @@ export default function Result() {
   const [loading, setLoading] = useState(true);
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
   
-
   useEffect(() => {
-    const simulateAnalysis = setTimeout(() => {
-      setDiagnosis('Eczema');
-      setLoading(false);
-    }, 3000); //placeholder time wait for now
-
-    return () => clearTimeout(simulateAnalysis);
-  }, []);
+    const fetchPrediction = async () => {
+      try {
+        const res = await fetch("http://192.168.1.89:3000/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ base64Image: await uriToBase64(uri.toString()) }),
+        });
+  
+        const data = await res.json();
+        const classNames = ["Acne", "Cellulitis", "Eczema", "Fungal"];
+        setDiagnosis(classNames[data.prediction]);
+      } catch (err) {
+        console.error("Prediction failed", err);
+        setDiagnosis("Error");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchPrediction();
+  }, []);  
 
   return (
     <View style={styles.container}>
@@ -32,12 +60,16 @@ export default function Result() {
             <Image source={{ uri: uri.toString() }} style={styles.image} />
           )}
           <Text style={styles.resultText}>Diagnosis: {diagnosis}</Text>
-          <Text style={styles.explanationText}>Eczema is a condition that causes the skin to become inflamed or irritated.</Text>
+          {diagnosis && (
+            <Text style={styles.explanationText}>
+              {classDescriptions[diagnosis]}
+            </Text>
+          )}
 
           <TouchableOpacity onPress={() => 
             router.push({
                 pathname: '/info',
-                params: { scrollTo: 'acne' }, //eczema as placeholder, but will change to be dynamic later
+                params: { scrollTo: diagnosis?.toLowerCase() }, //dynamic now
               })         
           }>
             <Text style={styles.link}>Take me to description</Text>
